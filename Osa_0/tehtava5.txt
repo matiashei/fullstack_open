@@ -24,5 +24,3 @@ sequenceDiagram
     deactivate palvelin
 
 
-#    Note right of selain: Selain pyytää palvelimelta json
-
