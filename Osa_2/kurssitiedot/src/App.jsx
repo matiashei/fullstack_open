@@ -5,6 +5,7 @@ const Course = ({ course }) => {
     <>
       <h1>{course.name}</h1>
       {course.parts.map(part => <div key={part.id}>{part.name + ' ' + part.exercises}</div>)}
+      <b>total of {totalAmount(course.parts)} exercises</b>
     </>
   )
 }
@@ -57,12 +58,7 @@ const App = () => {
 
   return (
     <>
-    <div>
-      <Course key={course.id} course={course} />
-    </div>
-    <div>
-      <b>total of {totalAmount(course.parts)} exercises</b>
-    </div>
+      {courses.map(course => <div key={course.id}><Course course={course} /></div>)}
     </>
   )
 }
