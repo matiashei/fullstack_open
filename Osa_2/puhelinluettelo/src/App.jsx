@@ -1,5 +1,37 @@
 import { useState } from 'react'
 
+const RenderNumbers = ({ personsToShow }) => {
+  return (
+    <div>
+      {personsToShow.map(person => <div key={person.name}>{person.name} {person.number}</div>)}
+    </div>
+  )
+}
+
+const Filter = ({ showFiltered, onChange }) => {
+  return (
+    <div>
+      filter shown with <input value={showFiltered} onChange={(e) => onChange(e.target.value)} />
+    </div>
+  )
+}
+
+const PersonForm = ({ addName, newName, handleNameChange, newNumber, handleNumberChange }) => {
+  return (
+    <form onSubmit={addName}>
+      <div>
+        name: <input value={newName} onChange={handleNameChange} />
+      </div>
+      <div>
+        number: <input value={newNumber} onChange={handleNumberChange} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456' },
@@ -45,25 +77,16 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with <input value={showFiltered} onChange={(event) => setShowFiltered(event.target.value)}></input>
-      </div>
-      <h2>add a new</h2>
-      <form onSubmit={addName}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter showFiltered={showFiltered} onChange={setShowFiltered} />
+      <h2>Add a new</h2>
+      <PersonForm
+        addName={addName}
+        newName={newName}
+        handleNameChange={handleNameChange}
+        newNumber={newNumber}
+        handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <div>
-        {personsToShow.map(person => <div key={person.name}>{person.name} {person.number}</div>)}
-      </div>
+      <RenderNumbers personsToShow={personsToShow} />
     </div>
   )
 
