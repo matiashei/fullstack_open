@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 
 const RenderNumbers = ({ personsToShow }) => {
   return (
@@ -40,15 +41,12 @@ const App = () => {
   const [showFiltered, setShowFiltered] = useState('')
 
   useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
+    personService
+      .getAll()
       .then(response => {
-        console.log('promise fulfilled')
         setPersons(response.data)
       })
   }, [])
-  console.log('render', persons.length, 'persons')
 
   const addName = (event) => {
     event.preventDefault()
@@ -63,6 +61,14 @@ const App = () => {
       setNewName('')
       setNewNumber('')
     }
+
+    personService
+      .create(personObject)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   const handleNameChange = (event) => {
