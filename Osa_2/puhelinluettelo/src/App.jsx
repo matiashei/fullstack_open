@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
 
-const RenderNumbers = ({ personsToShow }) => {
+const RenderNumbers = ({ personsToShow, removePerson }) => {
   return (
     <div>
-      {personsToShow.map(person => <div key={person.name}>{person.name} {person.number}</div>)}
+      {personsToShow.map(person => <div key={person.id}>{person.name} {person.number} <button onClick={() => removePerson(person.id)}>delete</button></div>)}
     </div>
   )
 }
@@ -13,7 +13,7 @@ const RenderNumbers = ({ personsToShow }) => {
 const Filter = ({ showFiltered, onChange }) => {
   return (
     <div>
-      filter shown with <input value={showFiltered} onChange={(e) => onChange(e.target.value)} />
+      filter shown with <input value={showFiltered} onChange={(event) => onChange(event.target.value)} />
     </div>
   )
 }
@@ -57,52 +57,57 @@ const App = () => {
     if (preventDuplicate(newName)) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      personService
+        .create(personObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
+    }
+  }
+
+    const removePerson = (id) => {
+      const person = persons.find(p => p.id === id)
+      personService
+        .remove(id, person.name)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id))
+        })
     }
 
-    personService
-      .create(personObject)
-      .then(response => {
-        setPersons(persons.concat(response.data))
-        setNewName('')
-        setNewNumber('')
-      })
+    const handleNameChange = (event) => {
+      setNewName(event.target.value)
+    }
+
+    const handleNumberChange = event => {
+      setNewNumber(event.target.value)
+    }
+
+    const preventDuplicate = (name) => {
+      return persons.find(person => person.name === name)
+    }
+
+    const personsToShow = showFiltered
+      ? persons.filter(person => person.name.toLowerCase().includes(showFiltered.toLowerCase()))
+      : persons
+
+    return (
+      <div>
+        <h2>Phonebook</h2>
+        <Filter showFiltered={showFiltered} onChange={setShowFiltered} />
+        <h2>Add a new</h2>
+        <PersonForm
+          addName={addName}
+          newName={newName}
+          handleNameChange={handleNameChange}
+          newNumber={newNumber}
+          handleNumberChange={handleNumberChange} />
+        <h2>Numbers</h2>
+        <RenderNumbers personsToShow={personsToShow} removePerson={removePerson} />
+      </div>
+    )
+
   }
 
-  const handleNameChange = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const handleNumberChange = event => {
-    setNewNumber(event.target.value)
-  }
-
-  const preventDuplicate = (name) => {
-    return persons.find(person => person.name === name)
-  }
-
-  const personsToShow = showFiltered
-    ? persons.filter(person => person.name.toLowerCase().includes(showFiltered.toLowerCase()))
-    : persons
-
-  return (
-    <div>
-      <h2>Phonebook</h2>
-      <Filter showFiltered={showFiltered} onChange={setShowFiltered} />
-      <h2>Add a new</h2>
-      <PersonForm
-        addName={addName}
-        newName={newName}
-        handleNameChange={handleNameChange}
-        newNumber={newNumber}
-        handleNumberChange={handleNumberChange} />
-      <h2>Numbers</h2>
-      <RenderNumbers personsToShow={personsToShow} />
-    </div>
-  )
-
-}
-
-export default App
+  export default App
