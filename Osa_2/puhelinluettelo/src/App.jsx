@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const RenderNumbers = ({ personsToShow, removePerson }) => {
   return (
     <div>
-      {personsToShow.map(person => <div key={person.id}>{person.name} {person.number} <button onClick={() => removePerson(person.id)}>delete</button></div>)}
+      {personsToShow.map(person => <li key={person.id}>{person.name} {person.number} <button onClick={() => removePerson(person.id)}>delete</button></li>)}
     </div>
   )
 }
@@ -39,6 +40,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [showFiltered, setShowFiltered] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -62,6 +64,7 @@ const App = () => {
             setPersons(persons.map(person => person.id !== existingPerson(newName).id ? person : response.data))
             setNewName('')
             setNewNumber('')
+            setNotificationMessage(`Updated number of ${personObject.name}`)
           })
 
       }
@@ -72,6 +75,10 @@ const App = () => {
           setPersons(persons.concat(response.data))
           setNewName('')
           setNewNumber('')
+          setNotificationMessage(`Added ${personObject.name}`)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
         })
     }
   }
@@ -82,6 +89,10 @@ const App = () => {
       .remove(id, person.name)
       .then(() => {
         setPersons(persons.filter(person => person.id !== id))
+        setNotificationMessage(`Deleted ${person.name}`)
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
       })
   }
 
@@ -104,6 +115,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter showFiltered={showFiltered} onChange={setShowFiltered} />
       <h2>Add a new</h2>
       <PersonForm
