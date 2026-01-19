@@ -54,8 +54,17 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    if (preventDuplicate(newName)) {
-      alert(`${newName} is already added to phonebook`)
+    if (existingPerson(newName)) {
+      if (confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        personService
+          .update(existingPerson(newName).id, personObject)
+          .then(response => {
+            setPersons(persons.map(person => person.id !== existingPerson(newName).id ? person : response.data))
+            setNewName('')
+            setNewNumber('')
+          })
+
+      }
     } else {
       personService
         .create(personObject)
@@ -67,47 +76,47 @@ const App = () => {
     }
   }
 
-    const removePerson = (id) => {
-      const person = persons.find(p => p.id === id)
-      personService
-        .remove(id, person.name)
-        .then(() => {
-          setPersons(persons.filter(person => person.id !== id))
-        })
-    }
-
-    const handleNameChange = (event) => {
-      setNewName(event.target.value)
-    }
-
-    const handleNumberChange = event => {
-      setNewNumber(event.target.value)
-    }
-
-    const preventDuplicate = (name) => {
-      return persons.find(person => person.name === name)
-    }
-
-    const personsToShow = showFiltered
-      ? persons.filter(person => person.name.toLowerCase().includes(showFiltered.toLowerCase()))
-      : persons
-
-    return (
-      <div>
-        <h2>Phonebook</h2>
-        <Filter showFiltered={showFiltered} onChange={setShowFiltered} />
-        <h2>Add a new</h2>
-        <PersonForm
-          addName={addName}
-          newName={newName}
-          handleNameChange={handleNameChange}
-          newNumber={newNumber}
-          handleNumberChange={handleNumberChange} />
-        <h2>Numbers</h2>
-        <RenderNumbers personsToShow={personsToShow} removePerson={removePerson} />
-      </div>
-    )
-
+  const removePerson = (id) => {
+    const person = persons.find(p => p.id === id)
+    personService
+      .remove(id, person.name)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
   }
 
-  export default App
+  const handleNameChange = (event) => {
+    setNewName(event.target.value)
+  }
+
+  const handleNumberChange = event => {
+    setNewNumber(event.target.value)
+  }
+
+  const existingPerson = (name) => {
+    return persons.find(person => person.name === name)
+  }
+
+  const personsToShow = showFiltered
+    ? persons.filter(person => person.name.toLowerCase().includes(showFiltered.toLowerCase()))
+    : persons
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <Filter showFiltered={showFiltered} onChange={setShowFiltered} />
+      <h2>Add a new</h2>
+      <PersonForm
+        addName={addName}
+        newName={newName}
+        handleNameChange={handleNameChange}
+        newNumber={newNumber}
+        handleNumberChange={handleNumberChange} />
+      <h2>Numbers</h2>
+      <RenderNumbers personsToShow={personsToShow} removePerson={removePerson} />
+    </div>
+  )
+
+}
+
+export default App
