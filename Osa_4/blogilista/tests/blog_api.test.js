@@ -87,9 +87,9 @@ test('a blog without url is not added', async () => {
   }
 
   await api
-  .post('/api/blogs')
-  .send(newBlog)
-  .expect(400)
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 
   const blogsAtEnd = await helper.blogsInDb()
 
@@ -110,4 +110,19 @@ test('blog with no likes defaults to zero', async () => {
     .expect('Content-Type', /application\/json/)
 
   assert.strictEqual((response.body.likes), 0)
+})
+
+test('a blog can be deleted', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  const ids = blogsAtEnd.map(b => b.id)
+  assert(!ids.includes(blogToDelete.id))
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 })
