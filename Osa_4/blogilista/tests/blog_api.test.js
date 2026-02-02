@@ -126,3 +126,25 @@ test('a blog can be deleted', async () => {
   assert(!ids.includes(blogToDelete.id))
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 })
+
+test('a blog can be updated', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+
+  const updatedBlogData = {
+    title: 'New blog title',
+    author: 'New Author',
+    url: 'http://example.com/new-blog-url',
+    likes: blogToUpdate.likes + 1,
+  }
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlogData)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  const updatedBlog = blogsAtEnd.find(b => b.id === blogToUpdate.id)
+
+  assert.strictEqual(updatedBlog.likes, blogToUpdate.likes + 1)
+})
