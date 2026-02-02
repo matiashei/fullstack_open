@@ -79,9 +79,26 @@ test('blog without title is not added', async () => {
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 })
 
-test('blog with no likes defaults to zero', async () => {
+test('a blog without url is not added', async () => {
   const newBlog = {
     title: 'Fifth blog',
+    author: 'Michelle McAllister',
+    likes: 10,
+  }
+
+  await api
+  .post('/api/blogs')
+  .send(newBlog)
+  .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
+test('blog with no likes defaults to zero', async () => {
+  const newBlog = {
+    title: 'Sifth blog',
     author: 'Tim Taylor',
     url: 'http://example.com/fifth-blog',
   }
