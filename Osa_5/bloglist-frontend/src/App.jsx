@@ -1,18 +1,8 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
-
-const Notification = ({ message }) => {
-  if (message === null) {
-    return null
-  }
-  return (
-    <div className="error">
-      {message}
-    </div>
-  )
-}
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -24,6 +14,7 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -53,7 +44,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setErrorMessage('wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -64,6 +55,10 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     blogService.setToken(null)
     setUser(null)
+    setSuccessMessage('logged out')
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
   }
 
   const addBlog = async (event) => {
@@ -77,8 +72,18 @@ const App = () => {
     blogService.create(blogObject).then(returnedBlog => {
       setBlogs(blogs.concat(returnedBlog))
       setNewBlog({ title: '', author: '', url: '' })
+      setSuccessMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    }).catch(error => {
+      setErrorMessage('error creating blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     })
   }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -146,6 +151,7 @@ const App = () => {
     <div>
       <h1>Blogs</h1>
       <Notification message={errorMessage} />
+      <Notification message={successMessage} />
 
       {!user && loginForm()}
       {user && (
