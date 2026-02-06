@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -85,47 +87,26 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>
-          username:
-          <input
-            type="text"
-            value={username}
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          password:
-          <input
-            type="password"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </label>
-      </div>
-      <button type="submit">login</button>
-    </form>
+    <Togglable buttonLabel="login">
+      <LoginForm
+        username={username}
+        password={password}
+        setUsername={setUsername}
+        setPassword={setPassword}
+        handleLogin={handleLogin}
+      />
+    </Togglable>
   )
 
-  const blogForm = () => {
-    const hideWhenVisible = { display: blogFormVisible ? 'none' : '' }
-    const showWhenVisible = { display: blogFormVisible ? '' : 'none' }
-
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setBlogFormVisible(true)}>new blog</button>
-        </div>
-        <div style={showWhenVisible}>
-          <BlogForm onSubmit={addBlog} newBlog={newBlog} setNewBlog={setNewBlog} />
-          <button onClick={() => setBlogFormVisible(false)}>cancel</button>
-        </div>
-      </div>
-    )
-  }
+  const blogForm = () => (
+    <Togglable buttonLabel="create new blog">
+      <BlogForm
+        onSubmit={addBlog}
+        newBlog={newBlog}
+        setNewBlog={setNewBlog}
+      />
+    </Togglable>
+  )
 
   return (
     <div>
@@ -141,11 +122,11 @@ const App = () => {
             <button onClick={handleLogout}>logout</button>
           </p>
           {blogForm()}
-          <ul>
-            {blogs.map(blog => (
-              <li key={blog.id}><Blog blog={blog} /></li>
-            ))}
-          </ul>
+          {blogs.map(blog => (
+            <div key={blog.id}>
+              <Blog blog={blog} />
+            </div>
+          ))}
         </div>
       )}
     </div>
