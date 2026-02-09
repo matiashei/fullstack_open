@@ -8,12 +8,12 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
-  const [blogFormVisible, setBlogFormVisible] = useState(false)
+
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' });
+  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
 
@@ -44,7 +44,7 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-    } catch (exception) {
+    } catch {
       setErrorMessage('wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
@@ -77,12 +77,11 @@ const App = () => {
         returnedBlog.user = user
         setBlogs(blogs.concat(returnedBlog))
         setNewBlog({ title: '', author: '', url: '', user: '' })
-        setBlogFormVisible(false)
         setSuccessMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
         setTimeout(() => {
           setSuccessMessage(null)
         }, 5000)
-      }).catch(error => {
+      }).catch(() => {
         setErrorMessage('error creating blog')
         setTimeout(() => {
           setErrorMessage(null)
