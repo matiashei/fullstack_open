@@ -68,22 +68,26 @@ const App = () => {
       title: newBlog.title,
       author: newBlog.author,
       url: newBlog.url,
+      user: user._id
     }
 
-    blogService.create(blogObject).then(returnedBlog => {
-      setBlogs(blogs.concat(returnedBlog))
-      setNewBlog({ title: '', author: '', url: '' })
-      setBlogFormVisible(false)
-      setSuccessMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
-      setTimeout(() => {
-        setSuccessMessage(null)
-      }, 5000)
-    }).catch(error => {
-      setErrorMessage('error creating blog')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    })
+    blogService
+      .create(blogObject)
+      .then(returnedBlog => {
+        returnedBlog.user = user
+        setBlogs(blogs.concat(returnedBlog))
+        setNewBlog({ title: '', author: '', url: '', user: '' })
+        setBlogFormVisible(false)
+        setSuccessMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000)
+      }).catch(error => {
+        setErrorMessage('error creating blog')
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
   }
 
   const handleLike = id => {
@@ -103,13 +107,32 @@ const App = () => {
         setBlogs(blogs.map(b => (b.id !== id ? b : returnedBlog)))
       })
       .catch(() => {
-        setErrorMessage(
-          'error updating blog'
-        )
+        setErrorMessage('error updating blog')
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
       })
+  }
+
+  const handleDelete = id => {
+    const blog = blogs.find(b => b.id === id)
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      blogService
+        .remove(id)
+        .then(() => {
+          setBlogs(blogs.filter(b => b.id !== id))
+          setSuccessMessage('blog removed')
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
+        })
+        .catch(() => {
+          setErrorMessage('error removing blog')
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
+    }
   }
 
   const loginForm = () => (
@@ -150,7 +173,7 @@ const App = () => {
           {blogForm()}
           {blogs.sort((a, b) => b.likes - a.likes).map(blog => (
             <div key={blog.id}>
-              <Blog blog={blog} handleLike={handleLike} />
+              <Blog blog={blog} handleLike={handleLike} handleDelete={handleDelete} />
             </div>
           ))}
         </div>
