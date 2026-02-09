@@ -86,6 +86,25 @@ const App = () => {
     })
   }
 
+  const handleLike = id => {
+    const blog = blogs.find(b => b.id === id)
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }
+
+    blogService
+      .update(id, updatedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(b => (b.id !== id ? b : returnedBlog)))
+      })
+      .catch(() => {
+        setErrorMessage(
+          'error updating blog'
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
+  }
+
   const loginForm = () => (
     <Togglable buttonLabel="login">
       <LoginForm
@@ -124,7 +143,7 @@ const App = () => {
           {blogForm()}
           {blogs.map(blog => (
             <div key={blog.id}>
-              <Blog blog={blog} />
+              <Blog blog={blog} handleLike={handleLike} />
             </div>
           ))}
         </div>
