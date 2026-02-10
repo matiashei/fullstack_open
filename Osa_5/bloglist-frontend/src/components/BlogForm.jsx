@@ -1,6 +1,14 @@
-const blogForm = ({ onSubmit, newBlog, setNewBlog }) => {
+import { useState } from 'react'
+
+const BlogForm = ({ createBlog }) => {
+  const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    createBlog(newBlog)
+  }
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={addBlog}>
       <h1>create new</h1>
       <div>
         <label>
@@ -37,4 +45,4 @@ const blogForm = ({ onSubmit, newBlog, setNewBlog }) => {
   )
 }
 
-export default blogForm
+export default BlogForm
