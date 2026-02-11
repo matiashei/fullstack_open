@@ -63,6 +63,19 @@ describe('Blog app', () => {
         const blog = page.locator('.blog').filter({ hasText: 'My first blog by Atte Author' })
         await expect(blog).toBeVisible()
       })
+
+      test('a blog can be liked', async ({ page }) => {
+        await page.getByRole('button', { name: 'new blog' }).click()
+
+        await page.getByLabel('title:').fill('My first blog')
+        await page.getByLabel('author:').fill('Atte Author')
+        await page.getByLabel('url:').fill('http://example.com/my_first_blog')
+        await page.getByRole('button', { name: 'create' }).click()
+        await page.getByRole('button', { name: 'view' }).click()
+        await page.getByRole('button', { name: 'like' }).click()
+
+        await expect(page.getByText('likes 1')).toBeVisible()
+      })
     })
   })
 })

@@ -43,7 +43,7 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
       {blog.title} by {blog.author}<button style={buttonStyle} onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
       <div style={showWhenVisible}>
         <a href={blog.url}>{blog.url}</a><br />
-        likes {blog.likes} <button style={likeButtonStyle} onClick={() => handleLike(blog.id)}>like</button><br />
+        likes {blog.likes}<button style={likeButtonStyle} onClick={() => handleLike(blog.id)}>like</button><br />
         {blog.user && <div>added by {blog.user.name} <br /></div>}
         {blog.user && blog.user.username === JSON.parse(window.localStorage.getItem('loggedBlogappUser')).username && (
           <button style={deleteButtonStyle} onClick={() => handleDelete(blog.id)}>remove</button>
