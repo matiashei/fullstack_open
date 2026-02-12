@@ -1,0 +1,15 @@
+const loginWith = async (page, username, password) => {
+  await page.getByLabel('username:').fill(username)
+  await page.getByLabel('password:').fill(password)
+  await page.getByRole('button', { name: 'login' }).click()
+}
+
+const createBlog = async (page, title, author, url) => {
+  await page.getByRole('button', { name: 'new blog' }).click()
+  await page.getByLabel('title:').fill('My first blog')
+  await page.getByLabel('author:').fill('Atte Author')
+  await page.getByLabel('url:').fill('http://example.com/my_first_blog')
+  await page.getByRole('button', { name: 'create' }).click()
+}
+
+export { loginWith, createBlog }
