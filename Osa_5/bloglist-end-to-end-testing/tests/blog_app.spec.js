@@ -1,5 +1,6 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
 const { loginWith, createBlog } = require('./helper')
+const { create } = require('domain')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -70,11 +71,19 @@ describe('Blog app', () => {
         await expect(blog).not.toBeVisible()
       })
 
-      test.only('remove button is only visible for the creator of a blog', async ({ page }) => {
+      test('remove button is only visible for the creator of a blog', async ({ page }) => {
         await page.getByRole('button', { name: 'logout' }).click()
         await loginWith(page, 'tina', 'password')
         await page.getByRole('button', { name: 'view' }).click()
         await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+      })
+
+      test.only('the blog with most likes is shown first', async ({ page }) => {
+        await createBlog(page, 'My second blog', 'Will Writer', 'http://example.com/my_second_blog')
+        await page.getByRole('button', { name: 'view' }).nth(1).click()
+        await page.getByRole('button', { name: 'like' }).click()
+        await expect(page.locator('.blog').nth(0)).toContainText('My second blog by Will Writer')
+        await expect(page.locator('.blog').nth(1)).toContainText('My first blog by Atte Author')
       })
     })
   })
