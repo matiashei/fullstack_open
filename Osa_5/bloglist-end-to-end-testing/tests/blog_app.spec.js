@@ -11,7 +11,13 @@ describe('Blog app', () => {
         password: 'secret'
       }
     })
-
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Tina Turner',
+        username: 'tina',
+        password: 'password'
+      }
+    })
     await page.goto('http://localhost:5173')
   })
 
@@ -62,7 +68,13 @@ describe('Blog app', () => {
         const blog = page.locator('.blog').filter({ hasText: 'My first blog by Atte Author' })
 
         await expect(blog).not.toBeVisible()
+      })
 
+      test.only('remove button is only visible for the creator of a blog', async ({ page }) => {
+        await page.getByRole('button', { name: 'logout' }).click()
+        await loginWith(page, 'tina', 'password')
+        await page.getByRole('button', { name: 'view' }).click()
+        await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
       })
     })
   })
