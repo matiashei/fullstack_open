@@ -29,7 +29,7 @@ export const showNotification = (message, time) => {
 
     timeoutID = setTimeout(() => {
       dispatch(clearNotification())
-    }, time * 5000)
+    }, time * 1000)
   }
 }
 

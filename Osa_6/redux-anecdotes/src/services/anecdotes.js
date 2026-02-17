@@ -27,4 +27,28 @@ const createNew = async (content) => {
   return await response.json()
 }
 
-export default { getAll, createNew }
+const updateVotes = async (id) => {
+  const anecdote = await getAll().then(anecdotes => anecdotes.find(a => a.id === id))
+
+  if (!anecdote) {
+    throw new Error('Failed to find anecdote')
+  }
+
+  const updatedAnecdote = { ...anecdote, votes: anecdote.votes + 1 }
+
+  const options = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updatedAnecdote)
+  }
+
+  const response = await fetch(`${baseUrl}/${id}`, options)
+
+  if (!response.ok) {
+    throw new Error('Failed to vote anecdote')
+  }
+
+  return await response.json()
+}
+
+export default { getAll, createNew, updateVotes }
