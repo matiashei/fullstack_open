@@ -8,9 +8,9 @@ interface Result {
   average: number,
 }
 
+
 export const parseArguments = (args: string[]): { dailyHours: number[], target: number } => {
   if (args.length < 4) throw new Error('Not enough arguments');
-
   const target = Number(args[2]);
   const dailyHours = args.slice(3).map(n => Number(n));
 
@@ -21,8 +21,8 @@ export const parseArguments = (args: string[]): { dailyHours: number[], target: 
   return {
     dailyHours,
     target
-  }
-}
+  };
+};
 
 const calculateExercises = (dailyHours: number[], target: number): Result => {
   const periodLength = dailyHours.length;
@@ -40,8 +40,8 @@ const calculateExercises = (dailyHours: number[], target: number): Result => {
 
   const success = average >= target;
 
-  let rating = 1;
-  let ratingDescription = "";
+  let rating: number;
+  let ratingDescription: string;
 
   if (average >= target) {
     rating = 3;
@@ -62,8 +62,8 @@ const calculateExercises = (dailyHours: number[], target: number): Result => {
     ratingDescription,
     target,
     average
-  }
-}
+  };
+};
 
 try {
   const { dailyHours, target } = parseArguments(process.argv);

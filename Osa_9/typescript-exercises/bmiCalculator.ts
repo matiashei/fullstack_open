@@ -9,7 +9,7 @@ const calculateBmi = (height: number, weight: number) => {
   } else {
     return 'Normal range';
   }
-}
+};
 
 interface BmiValues {
   height: number;
@@ -18,17 +18,17 @@ interface BmiValues {
 
 export const parseArguments = (args: string[]): BmiValues => {
   if (args.length < 4) throw new Error('Too few arguments!');
-  if (args.length > 4) throw new Error('Too many arguments!')
+  if (args.length > 4) throw new Error('Too many arguments!');
 
   if (!isNaN(Number(args[2])) && (!isNaN(Number(args[3])))) {
     return {
       height: Number(args[2]),
       weight: Number(args[3])
-    }
+    };
   } else {
-    throw new Error('Provided values were not numbers!')
+    throw new Error('Provided values were not numbers!');
   }
-}
+};
 
 if (require.main === module) {
   try {
