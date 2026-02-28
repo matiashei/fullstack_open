@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import { v1 as uuidv1 } from 'uuid';
 import patientsData from '../../data/patients';
 import {
