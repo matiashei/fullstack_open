@@ -1,4 +1,5 @@
 import type { CoursePart } from "../types";
+import { assertNever } from "../utils";
 
 const Part = (props: { part: CoursePart }) => {
   switch (props.part.kind) {
@@ -39,7 +40,7 @@ const Part = (props: { part: CoursePart }) => {
         </p>
       )
     default:
-      return null;
+      return assertNever(props.part);
   }
 };
 

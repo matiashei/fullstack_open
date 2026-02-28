@@ -1,26 +1,7 @@
 import type { CoursePart } from './types';
 import Content from './components/Content';
-
-interface CourseName {
-  name: string;
-}
-
-interface CourseParts {
-  parts: CoursePart[];
-}
-
-const Header = (props: CourseName) => {
-  return (
-    <h1>{props.name}</h1>
-  );
-};
-
-const Total = (props: CourseParts) => {
-  const total = props.parts.reduce((sum, part) => sum + part.exerciseCount, 0);
-  return (
-    <p>Number of exercises {total}</p>
-  );
-};
+import Header from './components/Header';
+import Total from './components/Total';
 
 const App = () => {
 

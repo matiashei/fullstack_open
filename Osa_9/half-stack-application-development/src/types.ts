@@ -26,10 +26,18 @@ interface CoursePartRequirements extends CoursePartDescription {
   kind: "special"
 }
 
+export interface CourseParts {
+  parts: CoursePart[];
+}
+
 export type CoursePart =
   | CoursePartBasic
   | CoursePartGroup
   | CoursePartBackground
   | CoursePartRequirements
+
+export type CourseName = {
+  name: string;
+}
 
 
