@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
-import Notification from './components/Notification'
+import { Notification, Error } from './components/Notification'
 
 const RenderNumbers = ({ personsToShow, removePerson }) => {
   return (
     <div>
-      {personsToShow.map(person => <li key={person.id}>{person.name} {person.number} <button onClick={() => removePerson(person.id)}>delete</button></li>)}
+      {personsToShow.map(person =>
+        <li key={person.id}>
+          {person.name} {person.number}
+          <button onClick={() => removePerson(person.id)}>
+            delete
+          </button>
+        </li>)}
     </div>
   )
 }
@@ -40,6 +46,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [showFiltered, setShowFiltered] = useState('')
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -64,6 +71,10 @@ const App = () => {
             setNewName('')
             setNewNumber('')
             setNotificationMessage(`Updated number of ${personObject.name}`)
+          })
+          .catch(error => {
+            console.log(error)
+            setErrorMessage(`Information of ${personObject.name} has already been removed from server`)
           })
 
       }
@@ -115,6 +126,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={notificationMessage} />
+      <Error message={errorMessage} />
       <Filter showFiltered={showFiltered} onChange={setShowFiltered} />
       <h2>Add a new</h2>
       <PersonForm
