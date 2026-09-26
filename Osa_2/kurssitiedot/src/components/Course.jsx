@@ -2,11 +2,11 @@ const totalAmount = (parts) => parts.reduce((sum, part) => sum + part.exercises,
 
 const Course = ({ course }) => {
     return (
-        <>
-            <h1>{course.name}</h1>
-            {course.parts.map(part => <div key={part.id}>{part.name + ' ' + part.exercises}</div>)}
+        <div>
+            <h2>{course.name}</h2>
+            {course.parts.map(part => <p key={part.id}>{part.name + ' ' + part.exercises}</p>)}
             <b>total of {totalAmount(course.parts)} exercises</b>
-        </>
+        </div>
     )
 }
 
