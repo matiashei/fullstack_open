@@ -71,10 +71,16 @@ const App = () => {
             setNewName('')
             setNewNumber('')
             setNotificationMessage(`Updated number of ${personObject.name}`)
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 5000)
           })
           .catch(error => {
             console.log(error)
             setErrorMessage(`Information of ${personObject.name} has already been removed from server`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
           })
 
       }
@@ -128,14 +134,14 @@ const App = () => {
       <Notification message={notificationMessage} />
       <Error message={errorMessage} />
       <Filter showFiltered={showFiltered} onChange={setShowFiltered} />
-      <h2>Add a new</h2>
+      <h3>Add a new</h3>
       <PersonForm
         addName={addName}
         newName={newName}
         handleNameChange={handleNameChange}
         newNumber={newNumber}
         handleNumberChange={handleNumberChange} />
-      <h2>Numbers</h2>
+      <h3>Numbers</h3>
       <RenderNumbers personsToShow={personsToShow} removePerson={removePerson} />
     </div>
   )
